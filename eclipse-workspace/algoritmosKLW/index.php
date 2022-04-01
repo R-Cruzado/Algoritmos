@@ -31,14 +31,15 @@ while ($row = mysqli_fetch_assoc($cadenasConNombreUsuario))
 }
 */
 
+//HACER BÚSQUEDA DE UN PAR DE NODOS CONCRETO SI TIENEN CORRELACIÓN!!!
 
-$visitado = [];
-//el 0 no es ningún nodo, tan solo es un indicador de que estamos en el nodo raíz
-$visitado[0] = 0;
+//creamos Cola FIFO
+/*$queue= new SplQueue();
+primeroEnAnchura($cadenasConNombreUsuario, 0, $queue);*/
 
-//REVISAR PORQUE PUEDE EMPEZAR POR OTRO Y TERMINAR POR OTRO!!!
-//primeroEnAnchura($cadenasConNombreUsuario, 0, $visitado);
-primeroEnProfundidad($cadenasConNombreUsuario, 0, $visitado);
+//creamos Pila LIFO
+$stack = new SplStack();
+primeroEnProfundidad($cadenasConNombreUsuario, 0, $stack);
 
 
 //CERRAR CONEXIÓN CON BASE DE DATOS

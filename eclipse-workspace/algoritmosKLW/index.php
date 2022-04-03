@@ -31,18 +31,23 @@ while ($row = mysqli_fetch_assoc($cadenasConNombreUsuario))
 }
 */
 
+
+
 //HACER BÚSQUEDA DE UN PAR DE NODOS CONCRETO SI TIENEN CORRELACIÓN!!!
 
+//para comprobar si se repiten los nodos
+$visitados = [];
+
 //creamos Cola FIFO
-/*$queue= new SplQueue();
-primeroEnAnchura($cadenasConNombreUsuario, 0, $queue);*/
+$queue= new SplQueue();
+primeroEnAnchura($cadenasConNombreUsuario, 0, $queue, $visitados);
 
 //creamos Pila LIFO
-$stack = new SplStack();
-primeroEnProfundidad($cadenasConNombreUsuario, 0, $stack);
+/*$stack = new SplStack();
+primeroEnProfundidad($cadenasConNombreUsuario, 0, $stack, $visitados);*/
 
 
-//CERRAR CONEXIÓN CON BASE DE DATOS
+//Cerrar conexión con base de datos
 mysqli_close($conBBDD);
 
 

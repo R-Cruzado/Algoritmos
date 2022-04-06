@@ -1,11 +1,16 @@
 <?php
 
 
-function primeroEnProfundidad($grafo, $inicio, $stack, $visitados)
+function primeroEnProfundidad($grafo, $inicio, $fin, $stack, $visitados)
 {
+    
     //Para mostrar camino
-    if ($inicio != 0)
-        print $inicio. " ";
+    print $inicio['IdRel']. " ";
+    //Para el algoritmo si encuentra el parentesco
+    if ($inicio['ClaveHijo'] == $fin){
+        print "(Esta relacionados)";
+        return 0;
+    }
     
     //Hay que resetear la posición del grafo
     mysqli_data_seek($grafo,0);
@@ -15,11 +20,11 @@ function primeroEnProfundidad($grafo, $inicio, $stack, $visitados)
     //Pila LIFO. Los elementos se añaden al final y se van sacando por el último
     //Los busca en orden numérico
     while ($row = mysqli_fetch_assoc($grafo)){
-        if ($row['IdRelPadre'] == $inicio){
+        if ($row['IdRelPadre'] == $inicio || $row['IdRelPadre'] == $inicio['IdRel']){
             //Comprobamos si el nodo que añadimos a la Cola ha sido visitado, de ser así no se añade (búsqueda en grafos)
             if (! in_array($row['ClaveHijo'], $visitados)){
                 array_push($visitados, $row['ClaveHijo']);
-                $aux->push($row['IdRel']);
+                $aux->push($row);
             }
         }
     }
@@ -27,7 +32,7 @@ function primeroEnProfundidad($grafo, $inicio, $stack, $visitados)
     foreach($aux as $value){
         $stack->push($value);
     }
-    primeroEnProfundidad($grafo, $stack->pop(), $stack, $visitados);
+    primeroEnProfundidad($grafo, $stack->pop(), $fin, $stack, $visitados);
     
     return 0;
 }

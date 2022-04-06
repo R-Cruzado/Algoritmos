@@ -33,18 +33,27 @@ while ($row = mysqli_fetch_assoc($cadenasConNombreUsuario))
 
 
 
+//SEMILLAS PARA GENERAR CASOS DE BASES DE DATOS
+//generación semilla 1
+//generación semilla 2
+//generación semilla 4
+//...
+
+
+
 //HACER BÚSQUEDA DE UN PAR DE NODOS CONCRETO SI TIENEN CORRELACIÓN!!!
 
 //para comprobar si se repiten los nodos
 $visitados = [];
 
 //creamos Cola FIFO
-$queue= new SplQueue();
-primeroEnAnchura($cadenasConNombreUsuario, 0, $queue, $visitados);
+/*$queue= new SplQueue();
+//numérico dependiendo del IdRelPadre es por el que empieza a buscar, para encontrar su descendiente hasta que lo encuentra, y la inversa
+primeroEnAnchura($cadenasConNombreUsuario, 361, 'gen_miki', $queue, $visitados);*/
 
 //creamos Pila LIFO
-/*$stack = new SplStack();
-primeroEnProfundidad($cadenasConNombreUsuario, 0, $stack, $visitados);*/
+$stack = new SplStack();
+primeroEnProfundidad($cadenasConNombreUsuario, 361, 'gen_casa', $stack, $visitados);
 
 
 //Cerrar conexión con base de datos

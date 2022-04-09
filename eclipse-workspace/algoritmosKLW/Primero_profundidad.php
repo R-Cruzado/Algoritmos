@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * @author : Roberto Cruzado Martínez
+ * @año: 2022
+ */
 
 function primeroEnProfundidad($grafo, $inicio, $fin, $stack, $visitados)
 {
@@ -18,8 +22,9 @@ function primeroEnProfundidad($grafo, $inicio, $fin, $stack, $visitados)
     $aux = new SplStack();
     
     //Pila LIFO. Los elementos se añaden al final y se van sacando por el último
-    //Los busca en orden numérico
+    //Los busca en la base de datos en orden de forma iterativa hasta encontrar las coincidencias
     while ($row = mysqli_fetch_assoc($grafo)){
+        //parámetro de entrada al inicio (numérico) o parámetro de entrada por iteración mediante diccionario (posición de pila)
         if ($row['IdRelPadre'] == $inicio || $row['IdRelPadre'] == $inicio['IdRel']){
             //Comprobamos si el nodo que añadimos a la Cola ha sido visitado, de ser así no se añade (búsqueda en grafos)
             if (! in_array($row['ClaveHijo'], $visitados)){
@@ -32,6 +37,8 @@ function primeroEnProfundidad($grafo, $inicio, $fin, $stack, $visitados)
     foreach($aux as $value){
         $stack->push($value);
     }
+    
+    //hacemos recursividad con el nuevo nodo y los datos actualizados
     primeroEnProfundidad($grafo, $stack->pop(), $fin, $stack, $visitados);
     
     return 0;

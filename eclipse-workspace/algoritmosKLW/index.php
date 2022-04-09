@@ -3,6 +3,7 @@
 /*
  * @author : Roberto Cruzado Martínez
  * @año: 2022
+ * index
 */
 
 
@@ -14,8 +15,8 @@ require_once("Llamada.php");
 
 //Inicio de conexión a base de datos
 //$conBBDD=@mysqli_connect("localhost","usrDksBasico","mifg6ef3pj33","dos_dksbasico")or die("Error en la conexion");
-$conBBDD=@mysqli_connect("localhost","usrDksDesarrollo","m5nd7Dt0Uf3c","dos_dksdesarrollo")or die("Error en la conexion");
-$cadenasConNombreUsuario = mysqli_query($conBBDD,"select IdRel, IdRelPadre, ClaveHijo from conceptos_conceptos");
+$conBBDD=@mysqli_connect("localhost","usrDksDesarrollo","m5nd7Dt0Uf3c","dksdesarrollo")or die("Error en la conexion");
+$cadenasConNombreUsuario = mysqli_query($conBBDD,"select IdRel, IdRelPadre, ClaveHijo, InsRef from conceptos_conceptos");
 
 
 
@@ -26,11 +27,12 @@ $cadenasConNombreUsuario = mysqli_query($conBBDD,"select IdRel, IdRelPadre, Clav
 //...
 
 
-llamada('gen_curriculum', 'gen_miCasa', $cadenasConNombreUsuario, 'Primero_anchura');
-
-$visitados = [];
-$queue= new SplQueue();
-//primeroEnAnchura($cadenasConNombreUsuario, 368, 'gen_miCasa', $queue, $visitados);
+/*
+ * parámetros: primer parámetro (padre), segundo parámetro (descendiente), grafo de BBDD, y 
+ * tipo de algoritmo (Primero_anchura o Primero_profundidad)  
+ * //compuestode/componea
+ * */
+llamada('gen_miCasa', 'gen_ai_es_gen_ventana', $cadenasConNombreUsuario, 'Primero_anchura');
 
 
 //Cerrar conexión con base de datos

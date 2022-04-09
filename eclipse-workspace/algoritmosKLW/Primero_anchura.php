@@ -3,14 +3,16 @@
 /*
  * @author : Roberto Cruzado Martínez
  * @año: 2022
+ * Algoritmo de primero en anchura
  */
 
+//Búsqueda primero en anchura de padre a descendientes
 function primeroEnAnchura($grafo, $inicio, $fin, $queue, $visitados)
 {
     
     //Para mostrar camino
     print $inicio['IdRel']. " ";
-    //Para el algoritmo si encuentra el parentesco
+    //Para el algoritmo si encuentra el parentesco, muestra por pantalla que están relacionados, si no, no lo están.
     if ($inicio['ClaveHijo'] == $fin){
         print "(Esta relacionados)";
         return 0;
@@ -24,18 +26,23 @@ function primeroEnAnchura($grafo, $inicio, $fin, $queue, $visitados)
     while ($row = mysqli_fetch_assoc($grafo)){
         //parámetro de entrada al inicio (numérico) o parámetro de entrada por iteración mediante diccionario (posición de cola)
         if ($row['IdRelPadre'] == $inicio['IdRel']){
-            //Comprobamos si el nodo que añadimos a la Cola ha sido visitado, de ser así no se añade (búsqueda en grafos)
+            //Comprobamos si el nodo que añadimos a la Cola ha sido visitado, de ser así no se añade (búsqueda en grafos)           
+            //Si el nodo no está en visitados, se añade a visitados y se añade a la cola
             if (! in_array($row['ClaveHijo'], $visitados)){
                 array_push($visitados, $row['ClaveHijo']);
                 $queue->enqueue($row);
             }
-            /*if (!((in_array($row['ClaveHijo'], $visitados)) && ($row['InsRef'] == 1))){
-                
-            }
-            if ((! in_array($row['ClaveHijo'], $visitados)) && ($row['InsRef'] != 1)){
-                array_push($visitados, $row['ClaveHijo']);
+            /*
+             * Si el nodo está en visitados, pero es una Instancia o SinTecho, no se añade a visitados porque ya está 
+             * en visitados, pero se añade a la cola, porque por su naturaleza expanden el árbol mas allá.
+             * */
+            elseif($row['InsRef'] == 0 || $row['InsRef'] == 2){
                 $queue->enqueue($row);
-            }*/
+            }
+            /*
+             *Si el nodo está en visitados, y es una referencia, se considera un nodo repetido y no se tiene 
+             *en cuenta para la búsqueda, porque por su naturaleza 
+             * */
         }
     }
     
@@ -44,5 +51,17 @@ function primeroEnAnchura($grafo, $inicio, $fin, $queue, $visitados)
     
     return 0;
 }
+
+
+//De hijos a padres sería igual la búsqueda hacia delante, pero teniendo en cuenta otros parámetros.
+
+
+
+
+
+
+
+
+
 
 

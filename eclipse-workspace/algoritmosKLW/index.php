@@ -13,9 +13,9 @@ require_once("Llamada.php");
 
 
 
-//Inicio de conexión a base de datos
+//Inicio de conexión a base de datos, dos_ es una BBDD de prueba
 //$conBBDD=@mysqli_connect("localhost","usrDksBasico","mifg6ef3pj33","dos_dksbasico")or die("Error en la conexion");
-$conBBDD=@mysqli_connect("localhost","usrDksDesarrollo","m5nd7Dt0Uf3c","dksdesarrollo")or die("Error en la conexion");
+$conBBDD=@mysqli_connect("localhost","usrDksDesarrollo","m5nd7Dt0Uf3c","dos_dksdesarrollo")or die("Error en la conexion");
 $cadenasConNombreUsuario = mysqli_query($conBBDD,"select IdRel, IdRelPadre, ClaveHijo, InsRef from conceptos_conceptos");
 
 
@@ -28,11 +28,11 @@ $cadenasConNombreUsuario = mysqli_query($conBBDD,"select IdRel, IdRelPadre, Clav
 
 
 /*
- * parámetros: primer parámetro (padre), segundo parámetro (descendiente), grafo de BBDD, y 
+ * parámetros: primer gen (padre), segundo gen (descendiente), grafo de BBDD, y 
  * tipo de algoritmo (Primero_anchura o Primero_profundidad)  
- * //compuestode/componea
+ * //compuestode/componea     descendiente/antecesor
  * */
-llamada('gen_miCasa', 'gen_ai_es_gen_ventana', $cadenasConNombreUsuario, 'Primero_anchura');
+llamada('gen_prueba_001', 'gen_casa', $cadenasConNombreUsuario, 'Primero_profundidad');
 
 
 //Cerrar conexión con base de datos

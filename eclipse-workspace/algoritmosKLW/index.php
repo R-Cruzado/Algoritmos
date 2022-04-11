@@ -32,7 +32,7 @@ $cadenasConNombreUsuario = mysqli_query($conBBDD,"select IdRel, IdRelPadre, Clav
  * tipo de algoritmo (Primero_anchura o Primero_profundidad)  
  * tipo de búsqueda (descendiente o ascendiente)
  * */
-llamada('gen_casa', 'gen_miCasa', $cadenasConNombreUsuario, 'Primero_profundidad', 'ascendiente');
+llamada('gen_prueba_001', 'gen_casa', $cadenasConNombreUsuario, 'Primero_anchura');
 
 
 //Cerrar conexión con base de datos

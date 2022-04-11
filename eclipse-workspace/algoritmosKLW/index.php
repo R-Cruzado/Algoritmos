@@ -30,9 +30,9 @@ $cadenasConNombreUsuario = mysqli_query($conBBDD,"select IdRel, IdRelPadre, Clav
 /*
  * parámetros: primer gen (padre), segundo gen (descendiente), grafo de BBDD, y 
  * tipo de algoritmo (Primero_anchura o Primero_profundidad)  
- * //compuestode/componea     descendiente/antecesor
+ * tipo de búsqueda (descendiente o ascendiente)
  * */
-llamada('gen_prueba_001', 'gen_casa', $cadenasConNombreUsuario, 'Primero_profundidad');
+llamada('gen_casa', 'gen_miCasa', $cadenasConNombreUsuario, 'Primero_profundidad', 'ascendiente');
 
 
 //Cerrar conexión con base de datos

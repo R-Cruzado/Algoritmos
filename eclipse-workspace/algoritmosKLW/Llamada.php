@@ -9,12 +9,13 @@
 
 require_once("Primero_profundidad.php");
 require_once("Primero_anchura.php");
+require_once("Busqueda_antecesor.php");
 
 /**
  * $primero: primer gen, $segundo: segundo gen, $grafo: tuplas de la BBDD, 
  * $algoritmo: tipo de algoritmo de búsqueda a utilizar
  */
-function llamada($inicio, $fin, $grafo, $algoritmo)
+function llamada2($inicio, $fin, $grafo, $algoritmo)
 {
     //Hay que resetear la posición del grafo por si está en una posición indebida
     mysqli_data_seek($grafo,0);
@@ -77,44 +78,53 @@ function llamada($inicio, $fin, $grafo, $algoritmo)
     return 0;
 }
 
-/*
-function llamada($inicio, $fin, $grafo, $algoritmo)
+
+
+//LO HACE EN PROFUNDIDAD
+function llamada($inicio, $fin, $grafo, $algoritmo, $busqueda)
 {
     //Hay que resetear la posición del grafo por si está en una posición indebida
     mysqli_data_seek($grafo,0);
     
+    /*
+    *Se necesita un contador para volver a marcar por donde estaba mysqli_data_seek($grafo,$contador), 
+    *ya que al llamar a la funcion busquedaAntecesor() cambia el marcador al final, y si coincide el hijo
+    *pero no se encuentra el padre, puede que otro hijo idéntico (referencia)
+    */
+    $contador = 0;
+    
     //búsqueda de tuplas en la base de datos
     while ($row = mysqli_fetch_assoc($grafo)){
-        
-        //comprobamos si existe $inicio en la base de datos
-        if ($row['ClaveHijo'] == $inicio){
-*/
-/*
-//comprobamos si existe $inicio en la base de datos
-if ($row['ClaveHijo'] == $fin){
+        $contador ++;
+        //comprobamos si existe $fin en la base de datos
+        if ($row['ClaveHijo'] == $fin){
     
-    if($algoritmo == 'Primero_anchura'){
-        //para comprobar si se repiten los nodos
-        $visitados = [];
-        //añadimos a visitados el primer elemento
-        array_push($visitados, $row['ClaveHijo']);
-        //creamos Cola FIFO
-        $queue= new SplQueue();
+            if($busqueda == 'ascendiente'){
+                //para comprobar si se repiten los nodos
+                $visitados = [];
+                //añadimos a visitados el primer elemento
+                array_push($visitados, $row['ClaveHijo']);
+                //creamos Cola FIFO
+                $stack= new SplStack();
         
-        //añadimos la tupla encontrada a la cola
-        $queue->enqueue($row);*/
-        /*
-         * $fin es el elemento que hay en la cola para hacer una búsqueda dependiendo del IdRel que es
-         * por el que empieza a buscar, para encontrar su antecesor hasta encontrar a $inicio.
-         * Llamada a primero en anchura
-         */
-        /*$algoritmo = primeroEnAnchura($grafo, $inicio, $queue->dequeue(), $queue, $visitados);
+                //añadimos la tupla encontrada a la cola
+                $stack->push($row);
+                /*
+                * $fin es el elemento que hay en la cola para hacer una búsqueda dependiendo del IdRel que es
+                * por el que empieza a buscar, para encontrar su antecesor hasta encontrar a $inicio.
+                * Llamada a primero en anchura
+                */
+                $algoritmo = busquedaAntecesor($grafo, $inicio, $stack, $visitados);
         
-        if($algoritmo == 1){
-            return 0;
+                if($algoritmo == 0){
+                    print "No estan relacionados ";
+                }
+                mysqli_data_seek($grafo,$contador);
+        
+            }
         }
-        
-    }*/
+    }
+}
 
 
 

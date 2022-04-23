@@ -6,7 +6,7 @@
  * Algoritmo de primero en profundidad
  */
 
-//Búsqueda primero en profundidad de padre a descendientes
+//Búsqueda primero en profundidad
 function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
 {
     
@@ -32,9 +32,8 @@ function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
         //Pila LIFO. Los elementos se añaden al final y se van sacando por el último
         //Los busca en la base de datos en orden de forma iterativa hasta encontrar las coincidencias
         while ($row = mysqli_fetch_assoc($grafo)){
-            //parámetro de entrada al inicio (numérico) o parámetro de entrada por iteración mediante diccionario (posición de pila)
+            //parámetro de entrada por iteración mediante diccionario (posición de pila)
             if ($row['IdRelPadre'] == $inicio['IdRel']){
-                //Comprobamos si el nodo que añadimos a la Cola ha sido visitado, de ser así no se añade (búsqueda en grafos)
                 //Si el nodo no está en visitados, se añade a visitados y se añade a la cola
                 if (! in_array($row['ClaveHijo'], $visitados)){
                     array_push($visitados, $row['ClaveHijo']);
@@ -49,7 +48,7 @@ function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
                 }
                 /*
                 *Si el nodo está en visitados, y es una referencia, se considera un nodo repetido y no se tiene
-                *en cuenta para la búsqueda, porque por su naturaleza
+                *en cuenta para la búsqueda, porque por su naturaleza. (búsqueda en grafos).
                 * */
             }
         }

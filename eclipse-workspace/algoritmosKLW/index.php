@@ -14,11 +14,11 @@ require_once("Semilla1.php");
  * Parámetros:
  * primer gen (padre)
  * segundo gen (descendiente)
- * DKS al cual queremos hacer la consulta "DksBasico, DksDesarrollo, DksGeneric, DksKLW, DksLanguajes"
+ * DKS al cuál queremos hacer la consulta "DksBasico, DksDesarrollo, DksGeneric, DksKLW, DksLanguajes"
  * tipo de algoritmo (Primero_anchura o Primero_profundidad)  
- * Tipo de semilla (1, 2, 3, 4, 5) a mayor número, mayor dificultad para el algoritmo
+ * Nivel de dificultad de la semilla (1, 2, 3, 4, 5) a mayor número, mayor dificultad para el algoritmo
  * */
-llamada('gen_prueba_001', 'gen_casa', 'DksDesarrollo', 'Primero_anchura', 1);
+llamada('gen_prueba_001', 'gen_amigos', 'DksDesarrollo', 'Coste_uniforme', 1);
 
 
 ?>

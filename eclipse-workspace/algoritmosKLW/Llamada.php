@@ -7,6 +7,7 @@
  * como argumento $inicio el valor de una tupla para un correcto funcionamiento), y las correspondientes excepciones
  */
 
+require_once("Coste_uniforme.php");
 require_once("Primero_profundidad.php");
 require_once("Primero_anchura.php");
 require_once("Conexion.php");
@@ -60,9 +61,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                 return 0;
             }
             elseif ($algoritmo == 'Primero_profundidad'){
-                //para comprobar si se repiten los nodos
                 $visitados = [];
-                //añadimos a visitados el primer elemento
                 array_push($visitados, $row['ClaveHijo']);
                 //creamos Pila LIFO
                 $stack = new SplStack();
@@ -79,6 +78,23 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                 CierreConexion($grafo[0]);
                 
                 //Termina de ejecutarse la funcion
+                return 0;
+            }
+            elseif ($algoritmo == 'Coste_uniforme'){
+                $visitados = [];
+                array_push($visitados, $row['ClaveHijo']);
+                //Creamos una cola de prioridad
+                $ColaPrioridad = new SplPriorityQueue();
+                /*
+                 * Añadimos la tupla encontrada a la cola de prioridad, se le añade prioridad 1 por ser la raíz
+                 */
+                $ColaPrioridad->insert($row, 1);
+                //Llamada a coste uniforme, de la misma forma que se llama a primero en anchura y primero en profundidad.
+                $algoritmo = costeUniforme($grafo[1], $fin, $ColaPrioridad, $visitados);
+                if ($algoritmo == 0){
+                    print "No estan relacionados";
+                }
+                CierreConexion($grafo[0]);
                 return 0;
             }
             else{

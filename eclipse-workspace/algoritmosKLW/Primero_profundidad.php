@@ -6,13 +6,14 @@
  * Algoritmo de primero en profundidad
  */
 
-//Búsqueda primero en profundidad
+//Algoritmo de primero en profundidad
 function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
 {
     
     //Bucle while o do while es mas eficiente que la recursividad en programación imperativa, como lo es PHP
     do{
         
+        //Padre actual
         $inicio = $stack->pop();
     
         //Para mostrar camino
@@ -28,7 +29,7 @@ function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
         mysqli_data_seek($grafo,0);
     
         $aux = new SplStack();
-    
+        
         //Pila LIFO. Los elementos se añaden al final y se van sacando por el último
         //Los busca en la base de datos en orden de forma iterativa hasta encontrar las coincidencias
         while ($row = mysqli_fetch_assoc($grafo)){
@@ -51,15 +52,22 @@ function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
                 *en cuenta para la búsqueda, porque por su naturaleza. (búsqueda en grafos).
                 * */
             }
+            
         }
-        //Se añaden al final de los que ya hay en $stack en conjuntos ordenados de izquierda a derecha
-        foreach($aux as $value){
-            $stack->push($value);
+        /*
+         * Si se han añadido elementos a la pila auxiliar
+         * Se añaden al final de los que ya hay en $stack en conjuntos ordenados de izquierda a derecha
+         */
+        if (!$aux->isEmpty()){
+            foreach($aux as $value){
+                $stack->push($value);
+            }
         }
-    
+        
     //Si la pila acaba vacía es que se ha terminado el algoritmo sin obtener la solución
     }while(!$stack->isEmpty());
     
+    //devuelve 0 como indicativo de que no están correlacionados
     return 0;
 }
 

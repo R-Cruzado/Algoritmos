@@ -6,7 +6,7 @@
  * Algoritmo de primero en anchura
  */
 
-//Búsqueda primero en anchura
+//Algoritmo de primero en anchura
 function primeroEnAnchura($grafo, $fin, $queue, $visitados)
 {
     //Bucle while o do while es mas eficiente que la recursividad en programación imperativa, como lo es PHP

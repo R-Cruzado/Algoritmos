@@ -6,6 +6,7 @@
  * Algoritmo de primero en profundidad
  */
 
+
 //Algoritmo de primero en profundidad
 function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
 {
@@ -15,19 +16,19 @@ function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
         
         //Padre actual
         $inicio = $stack->pop();
-    
+        
         //Para mostrar camino
         print $inicio['IdRel']. " ";
-    
+        
         //Para el algoritmo si encuentra el parentesco
         if ($inicio['ClaveHijo'] == $fin){
             print "(Esta relacionados)";
             return 1;
         }
-    
+        
         //Hay que resetear la posición del grafo
         mysqli_data_seek($grafo,0);
-    
+        
         $aux = new SplStack();
         
         //Pila LIFO. Los elementos se añaden al final y se van sacando por el último
@@ -41,16 +42,16 @@ function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
                     $aux->push($row);
                 }
                 /*
-                * Si el nodo está en visitados, pero es una Instancia o SinTecho, no se añade a visitados porque ya está
-                * en visitados, pero se añade a la cola, porque por su naturaleza expanden el árbol mas allá.
-                * */
+                 * Si el nodo está en visitados, pero es una Instancia o SinTecho, no se añade a visitados porque ya está
+                 * en visitados, pero se añade a la cola, porque por su naturaleza expanden el árbol mas allá.
+                 * */
                 elseif($row['InsRef'] == 0 || $row['InsRef'] == 2){
                     $aux->push($row);
                 }
                 /*
-                *Si el nodo está en visitados, y es una referencia, se considera un nodo repetido y no se tiene
-                *en cuenta para la búsqueda, porque por su naturaleza. (búsqueda en grafos).
-                * */
+                 *Si el nodo está en visitados, y es una referencia, se considera un nodo repetido y no se tiene
+                 *en cuenta para la búsqueda, porque por su naturaleza. (búsqueda en grafos).
+                 * */
             }
             
         }
@@ -64,7 +65,7 @@ function primeroEnProfundidad($grafo, $fin, $stack, $visitados)
             }
         }
         
-    //Si la pila acaba vacía es que se ha terminado el algoritmo sin obtener la solución
+        //Si la pila acaba vacía es que se ha terminado el algoritmo sin obtener la solución
     }while(!$stack->isEmpty());
     
     //devuelve 0 como indicativo de que no están correlacionados

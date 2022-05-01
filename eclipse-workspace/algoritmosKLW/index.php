@@ -19,7 +19,7 @@ $iniciaTiempo = microtime(true);
  * segundo gen (descendiente)
  * DKS al cuál queremos hacer la consulta "DksBasico, DksDesarrollo, DksGeneric, DksKLW, DksLanguajes"
  * Tipo de algoritmo (Primero_anchura o Primero_profundidad, Coste_uniforme)
- * Nivel de dificultad de la semilla (1, 2, 3, 4, 5) a mayor número, mayor dificultad para el algoritmo
+ * Nivel de dificultad de la semilla (1, 2, 3) a mayor número, mayor dificultad para el algoritmo
  * */
 llamada('a', 'b', 'DksDesarrollo', 'Primero_anchura', 2);
 

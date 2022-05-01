@@ -16,7 +16,8 @@ function semilla2($conBBDD){
     $caracteres = 'abcdefghijklmnopqrstuvwxyz';
     
     //Se asignan los datos a la BBDD. Se pueden hacer varios similares de distinto tamaño y cada uno sería un concepto
-    for ($IdRel = 1; $IdRel <= 5000; $IdRel++) {
+    //3500 genes (nodos)
+    for ($IdRel = 1; $IdRel <= 3500; $IdRel++) {
         //Nodo raiz
         if ($IdRel == 1){
             $IdRelPadre = 0;
@@ -34,15 +35,15 @@ function semilla2($conBBDD){
         //referencia, instancia o sinTecho
         $InsRef = rand(0,2);
         
-        //INSREF!!!!!!!!!!!!!!!!!!!!!!!!!!!! MOSTRAR TIEMPO DE EJECUCIÓN
-        
+        //mostrar datos insertados
         //print $IdRel."*".$IdRelPadre."*".$ClaveHijo."*".$InsRef." ";
 
+        //Se insertan los datos
         mysqli_query($conBBDD, "INSERT INTO conceptos_conceptos VALUES
             ('".$IdRel."','".$IdRelPadre."','".$ClaveHijo."','a',1,'',1,'".$InsRef."')");
     }
     
-
+    return 1;
     
 }
 

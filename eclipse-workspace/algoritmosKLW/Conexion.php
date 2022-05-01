@@ -10,9 +10,7 @@
 
 require_once("Semilla1.php");
 require_once("Semilla2.php");
-/*require_once("Semilla3.php");
- require_once("Semilla4.php");
- require_once("Semilla5.php");*/
+require_once("Semilla3.php");
 
 
 /*
@@ -26,7 +24,10 @@ function conexion($dks, $semilla){
             //conexión a la BBDD
             $DksBasicoConexion=@mysqli_connect("localhost","usrDksBasico","mifg6ef3pj33","dos_dksbasico")or die("Error en la conexion de DKSbasico");
             //Se rellenan los datos de la BBDD con la semilla correspondiente
-            semilla($semilla, $DksBasicoConexion);
+            $semilla = semilla($semilla, $DksBasicoConexion);
+            //Si semilla incorrecta
+            if ($semilla == 0)
+                return 0;
             //consulta a la BBDD
             $DksBasicoConsulta = mysqli_query($DksBasicoConexion,"select * from conceptos_conceptos");
             /*
@@ -38,25 +39,33 @@ function conexion($dks, $semilla){
         case 'DksDesarrollo':
             //Conexión a las base de datos, dos_ es una BBDD de prueba
             $DksDesarrolloConexion=@mysqli_connect("localhost","usrDksDesarrollo","m5nd7Dt0Uf3c","dos_dksdesarrollo")or die("Error en la conexion de DksDesarrollo");
-            semilla($semilla, $DksDesarrolloConexion);
+            $semilla = semilla($semilla, $DksDesarrolloConexion);
+            if ($semilla == 0)
+                return 0;
             $DksDesarrolloConsulta = mysqli_query($DksDesarrolloConexion,"select * from conceptos_conceptos");
             $salida = array($DksDesarrolloConexion, $DksDesarrolloConsulta);
             return $salida;
         case 'DksGeneric':
             $DksGenericConexion=@mysqli_connect("localhost","usrDksGeneric","lo93b5jd84h5","dksgeneric")or die("Error en la conexion de GenericConexion");
-            semilla($semilla, $DksGenericConexion);
+            $semilla = semilla($semilla, $DksGenericConexion);
+            if ($semilla == 0)
+                return 0;
             $DksGenericConsulta = mysqli_query($DksGenericConexion,"select * from conceptos_conceptos");
             $salida = array($DksGenericConexion, $DksGenericConsulta);
             return $salida;
         case 'DksKLW':
             $DksKlwConexion=@mysqli_connect("localhost","usrDksKlw","cd4ji96hu9bd","dksklw")or die("Error en la conexion de KlwConexion");
-            semilla($semilla, $DksKlwConexion);
+            $semilla = semilla($semilla, $DksKlwConexion);
+            if ($semilla == 0)
+                return 0;
             $DksKlwConsulta = mysqli_query($DksKlwConexion,"select * from conceptos_conceptos");
             $salida = array($DksKlwConexion, $DksKlwConsulta);
             return $salida;
         case 'DksLanguajes':
             $DksLanguajesConexion=@mysqli_connect("localhost","usrDksLanguajes","kdhr7m4j6f2b","dkslanguajes")or die("Error en la conexion de LanguajesConexion");
-            semilla($semilla, $DksLanguajesConexion);
+            $semilla = semilla($semilla, $DksLanguajesConexion);
+            if ($semilla == 0)
+                return 0;
             $DKSLanguajesConsulta = mysqli_query($DksLanguajesConexion,"select * from conceptos_conceptos");
             $salida = array($DksLanguajesConexion, $DKSLanguajesConsulta);
             return $salida;
@@ -78,7 +87,7 @@ function semilla($semilla, $conBBDD){
         case 3:
             return semilla3($conBBDD);
         default:
-            print "La semilla introducida es incorrecta";
+            print "La semilla introducida es incorrecta ";
             return 0;
     }
 }

@@ -29,7 +29,7 @@ function costeUniforme($grafo, $fin, $ColaPrioridad, $visitados){
         
         //Para el algoritmo si encuentra el parentesco
         if ($inicio['ClaveHijo'] == $fin){
-            print "(Esta relacionados)";
+            print "(Estan relacionados)";
             return 1;
         }
         

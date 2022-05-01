@@ -21,7 +21,7 @@ function primeroEnAnchura($grafo, $fin, $queue, $visitados)
         
         //Para el algoritmo si encuentra el parentesco, muestra por pantalla que están relacionados, si no, no lo están.
         if ($inicio['ClaveHijo'] == $fin){
-            print "(Esta relacionados)";
+            print "(Estan relacionados)";
             //Si están relacionados devuelve 1 como indicativo de que lo están
             return 1;
         }

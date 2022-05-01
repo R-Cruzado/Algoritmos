@@ -58,7 +58,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                     $algoritmo = primeroEnAnchura($grafo[1], $fin, $queue, $visitados);
                     
                     if ($algoritmo == 0){
-                        print "No estan relacionados";
+                        print "(No estan relacionados)";
                     }
                     
                     //cerramos la conexión de la BBDD. $grafo es un array donde [0] es la conexión a la BBDD que hay habierta
@@ -78,7 +78,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                     $algoritmo = primeroEnProfundidad($grafo[1], $fin, $stack, $visitados);
                     
                     if ($algoritmo == 0){
-                        print "No estan relacionados";
+                        print "(No estan relacionados)";
                     }
                     
                     //cerramos la conexión de la BBDD
@@ -99,7 +99,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                     //Llamada a coste uniforme, de la misma forma que se llama a primero en anchura y primero en profundidad.
                     $algoritmo = costeUniforme($grafo[1], $fin, $ColaPrioridad, $visitados);
                     if ($algoritmo == 0){
-                        print "No estan relacionados";
+                        print "(No estan relacionados)";
                     }
                     CierreConexion($grafo[0]);
                     return 0;

@@ -17,7 +17,7 @@ require_once("Semilla3.php");
  * Conectar con la BBDD correspondiente, y hacer las consultas correspondientes
  * $dks: Tipo de dks donde se harán las consultas, $semilla: nivel de dificultad del dks
  * */
-function conexion($dks, $semilla){
+function conexion($dks, $semilla, $inicio){
     
     switch($dks){
         case 'DksBasico':
@@ -28,8 +28,8 @@ function conexion($dks, $semilla){
             //Si semilla incorrecta
             if ($semilla == 0)
                 return 0;*/
-            //consulta a la BBDD
-            $DksBasicoConsulta = mysqli_query($DksBasicoConexion,"select * from conceptos_conceptos");
+            //consulta a la BBDD sobre el primer gen pasado por parámetro
+            $DksBasicoConsulta = mysqli_query($DksBasicoConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
             /*
              * Array para devolver conexión y consulta, ya que necesitamos la conexión que hemos habierto para después
              * cerrarla, y la consulta para desarrollar el algoritmo.
@@ -42,7 +42,7 @@ function conexion($dks, $semilla){
             /*$semilla = semilla($semilla, $DksDesarrolloConexion);
             if ($semilla == 0)
                 return 0;*/
-            $DksDesarrolloConsulta = mysqli_query($DksDesarrolloConexion,"select * from conceptos_conceptos");
+            $DksDesarrolloConsulta = mysqli_query($DksDesarrolloConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
             $salida = array($DksDesarrolloConexion, $DksDesarrolloConsulta);
             return $salida;
         case 'DksGeneric':
@@ -50,7 +50,7 @@ function conexion($dks, $semilla){
             /*$semilla = semilla($semilla, $DksGenericConexion);
             if ($semilla == 0)
                 return 0;*/
-            $DksGenericConsulta = mysqli_query($DksGenericConexion,"select * from conceptos_conceptos");
+            $DksGenericConsulta = mysqli_query($DksGenericConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
             $salida = array($DksGenericConexion, $DksGenericConsulta);
             return $salida;
         case 'DksKLW':
@@ -58,7 +58,7 @@ function conexion($dks, $semilla){
             /*$semilla = semilla($semilla, $DksKlwConexion);
             if ($semilla == 0)
                 return 0;*/
-            $DksKlwConsulta = mysqli_query($DksKlwConexion,"select * from conceptos_conceptos");
+            $DksKlwConsulta = mysqli_query($DksKlwConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
             $salida = array($DksKlwConexion, $DksKlwConsulta);
             return $salida;
         case 'DksLanguajes':
@@ -66,7 +66,7 @@ function conexion($dks, $semilla){
             /*$semilla = semilla($semilla, $DksLanguajesConexion);
             if ($semilla == 0)
                 return 0;*/
-            $DKSLanguajesConsulta = mysqli_query($DksLanguajesConexion,"select * from conceptos_conceptos");
+            $DKSLanguajesConsulta = mysqli_query($DksLanguajesConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
             $salida = array($DksLanguajesConexion, $DKSLanguajesConsulta);
             return $salida;
         default:

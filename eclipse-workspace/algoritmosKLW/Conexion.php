@@ -22,57 +22,51 @@ function conexion($dks, $semilla, $inicio){
     switch($dks){
         case 'DksBasico':
             //conexión a la BBDD
-            $DksBasicoConexion=@mysqli_connect("localhost","usrDksBasico","mifg6ef3pj33","dksbasico")or die("Error en la conexion de DKSbasico");
+            $conexion=@mysqli_connect("localhost","usrDksBasico","mifg6ef3pj33","dksbasico")or die("Error en la conexion de DKSbasico");
             //Se rellenan los datos de la BBDD con la semilla correspondiente
-            /*$semilla = semilla($semilla, $DksBasicoConexion);
+            //Comentado porque las semillas se utilizan para realizar las pruebas de eficiencia, cuando se utilizan las semillas se descomenta
+            /*$semilla = semilla($semilla, $conexion);
             //Si semilla incorrecta
             if ($semilla == 0)
                 return 0;*/
-            //consulta a la BBDD sobre el primer gen pasado por parámetro
-            $DksBasicoConsulta = mysqli_query($DksBasicoConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
-            /*
-             * Array para devolver conexión y consulta, ya que necesitamos la conexión que hemos habierto para después
-             * cerrarla, y la consulta para desarrollar el algoritmo.
-             */
-            $salida = array($DksBasicoConexion, $DksBasicoConsulta);
-            return $salida;
+            break;
         case 'DksDesarrollo':
             //Conexión a las base de datos, dos_ es una BBDD de prueba
-            $DksDesarrolloConexion=@mysqli_connect("localhost","usrDksDesarrollo","m5nd7Dt0Uf3c","dksdesarrollo")or die("Error en la conexion de DksDesarrollo");
+            $conexion=@mysqli_connect("localhost","usrDksDesarrollo","m5nd7Dt0Uf3c","dksdesarrollo")or die("Error en la conexion de DksDesarrollo");
             /*$semilla = semilla($semilla, $DksDesarrolloConexion);
             if ($semilla == 0)
                 return 0;*/
-            $DksDesarrolloConsulta = mysqli_query($DksDesarrolloConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
-            $salida = array($DksDesarrolloConexion, $DksDesarrolloConsulta);
-            return $salida;
+            break;
         case 'DksGeneric':
-            $DksGenericConexion=@mysqli_connect("localhost","usrDksGeneric","lo93b5jd84h5","dksgeneric")or die("Error en la conexion de GenericConexion");
+            $conexion=@mysqli_connect("localhost","usrDksGeneric","lo93b5jd84h5","dksgeneric")or die("Error en la conexion de GenericConexion");
             /*$semilla = semilla($semilla, $DksGenericConexion);
             if ($semilla == 0)
                 return 0;*/
-            $DksGenericConsulta = mysqli_query($DksGenericConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
-            $salida = array($DksGenericConexion, $DksGenericConsulta);
-            return $salida;
+            break;
         case 'DksKLW':
-            $DksKlwConexion=@mysqli_connect("localhost","usrDksKlw","cd4ji96hu9bd","dksklw")or die("Error en la conexion de KlwConexion");
+            $conexion=@mysqli_connect("localhost","usrDksKlw","cd4ji96hu9bd","dksklw")or die("Error en la conexion de KlwConexion");
             /*$semilla = semilla($semilla, $DksKlwConexion);
             if ($semilla == 0)
                 return 0;*/
-            $DksKlwConsulta = mysqli_query($DksKlwConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
-            $salida = array($DksKlwConexion, $DksKlwConsulta);
-            return $salida;
+            break;
         case 'DksLanguajes':
-            $DksLanguajesConexion=@mysqli_connect("localhost","usrDksLanguajes","kdhr7m4j6f2b","dkslanguajes")or die("Error en la conexion de LanguajesConexion");
+            $conexion=@mysqli_connect("localhost","usrDksLanguajes","kdhr7m4j6f2b","dkslanguajes")or die("Error en la conexion de LanguajesConexion");
             /*$semilla = semilla($semilla, $DksLanguajesConexion);
             if ($semilla == 0)
                 return 0;*/
-            $DKSLanguajesConsulta = mysqli_query($DksLanguajesConexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
-            $salida = array($DksLanguajesConexion, $DKSLanguajesConsulta);
-            return $salida;
-        default:
-            print "El DKS pasado por parámetro no existe";
             
+        default:
+            print "El DKS pasado por parametro no existe ";
+            return 0;
     }
+    //consulta a la BBDD sobre el primer gen pasado por parámetro
+    $consulta = mysqli_query($conexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
+    /*
+     * Array para devolver conexión y consulta, ya que necesitamos la conexión que hemos habierto para después
+     * cerrarla, y la consulta para desarrollar el algoritmo.
+     */
+    $salida = array($conexion, $consulta);
+    return $salida;
     
 }
 

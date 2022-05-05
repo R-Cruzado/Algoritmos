@@ -51,7 +51,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                  * a $fin.
                  * Llamada a primero en anchura
                  */
-                $algoritmo = primeroEnAnchura($consulta[0], $fin, $queue, $visitados);
+                $algoritmo = primeroEnAnchura($consulta[0], $fin, $queue, $visitados, $dks);
 
                 if ($algoritmo == 0) {
                     print "(No estan relacionados)";

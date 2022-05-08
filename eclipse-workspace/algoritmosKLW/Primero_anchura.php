@@ -8,12 +8,11 @@
 
 require_once("Llamada.php");
 require_once("Conexion.php");
+require_once("DistribuidoUtils.php");
 
 // Algoritmo de primero en anchura
 function primeroEnAnchura($fin, $queue, $visitados, $dks)
 {
-
-    // !!!!!!UTILIZAR FUNCIONES Y OBTIMIZAR CÓDIGO, CREAR CLASE AUXDISTRIBUIDO Y METER ALGUNAS FUNCIONES GENERALES
     
     //Variable para establecer las conexiones a la base de datos
     $conexion = 0;
@@ -97,40 +96,6 @@ function primeroEnAnchura($fin, $queue, $visitados, $dks)
     
     // devuelve 0 como indicativo de que no están correlacionados
     return 0;
-}
-
-
-
-
-
-//Función auxiliar para buscar el concepto instanciado o referenciado
-function busquedaConcepto($inicio, $conexion, &$padre){
-    
-    $hijos = mysqli_query($conexion, "SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '" . $inicio['ClaveHijo'] . "'");
-    
-    mysqli_data_seek($hijos, 0);
-    
-    //Buscar el concepto instanciado o referenciado en este mismo dks
-    while ($row = mysqli_fetch_assoc($hijos)) {
-        $padre = $row;
-        break;
-    }
-    
-}
-
-
-//Función auxiliar para la búsqueda de genes locales, & es paso por referencia
-function genesLocales($inicio, &$conexion, &$queue, &$visitados, $dks){
-    
-    //cerramos la conexion anterior
-    mysqli_close($conexion);
-    
-    //Se realiza la conexión a la BBDD del dks local
-    conexion($dks, $conexion);
-    
-    //Se buscan los hijos (ALGORITMO)
-    buscaHijos($inicio, $conexion, $queue, $visitados);
-    
 }
 
 

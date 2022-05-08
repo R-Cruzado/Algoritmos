@@ -51,16 +51,16 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                  * a $fin.
                  * Llamada a primero en anchura
                  */
-                $algoritmo = primeroEnAnchura($consulta[0], $fin, $queue, $visitados, $dks);
+                $algoritmo = primeroEnAnchura($fin, $queue, $visitados, $dks);
 
                 if ($algoritmo == 0) {
                     print "(No estan relacionados)";
                 }
-
-                // cerramos la conexión de la BBDD. $grafo es un array donde [0] es la conexión a la BBDD que hay habierta
-                CierreConexion($consulta[0]);
-
-                // Termina de ejecutarse la funcion
+                
+                /*
+                 * Termina de ejecutarse la funcion. Busca en el concepto original, no en las instanciaciones ni referencias
+                 * no originales que dependen de otros genes, por eso una vez que encuentra el original, si lo encuenta, para
+                 */
                 return 0;
 
             case 'Primero_profundidad':

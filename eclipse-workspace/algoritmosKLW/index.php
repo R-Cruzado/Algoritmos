@@ -8,7 +8,6 @@
 
 
 require_once("Llamada.php");
-require_once("Semilla1.php");
 
 //Comienzo de contador de tiempo de ejecución
 $iniciaTiempo = microtime(true);
@@ -21,7 +20,7 @@ $iniciaTiempo = microtime(true);
  * Tipo de algoritmo (Primero_anchura o Primero_profundidad, Coste_uniforme)
  * Nivel de dificultad de la semilla (1, 2, 3) a mayor número, mayor dificultad para el algoritmo
  * */
-llamada('gen_prueba_001', 'gen_casa', 'DksDesarrollo', 'Primero_anchura', 2);
+llamada('gen_prueba_001', 'gen_amigos', 'DksDesarrollo', 'Primero_anchura', 2);
 
 //Fin de tiempo de ejecución y mostrarlo por pantalla
 $finalizaTiempo = microtime(true);

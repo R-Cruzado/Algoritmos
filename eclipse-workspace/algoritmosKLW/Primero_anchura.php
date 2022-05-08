@@ -5,13 +5,15 @@
  * @año: 2022
  * Algoritmo de primero en anchura
  */
-require_once ("Llamada.php");
+
+require_once("Llamada.php");
+require_once("Conexion.php");
 
 // Algoritmo de primero en anchura
 function primeroEnAnchura($fin, $queue, $visitados, $dks)
 {
-    // !!!!!!CUIDADO CON LA CONEXIÓN QUE CIERRA AL FINAL
-    // !!!!!!UTILIZAR FUNCIONES Y OBTIMIZAR CÓDIGO
+
+    // !!!!!!UTILIZAR FUNCIONES Y OBTIMIZAR CÓDIGO, CREAR CLASE AUXDISTRIBUIDO Y METER ALGUNAS FUNCIONES GENERALES
     
     //Variable para establecer las conexiones a la base de datos
     $conexion = 0;
@@ -44,21 +46,15 @@ function primeroEnAnchura($fin, $queue, $visitados, $dks)
             mysqli_close($conexion);
             
             //conexión a otro DKS
-            if ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Generic") {
-                $conexion = @mysqli_connect("localhost", "usrDksGeneric", "lo93b5jd84h5", "dksgeneric") or die("Error en la conexion de GenericConexion");
-            } elseif ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_klw") {
-                $conexion = @mysqli_connect("localhost", "usrDksKlw", "cd4ji96hu9bd", "dksklw") or die("Error en la conexion de DKSbasico");
-            } elseif ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Languajes") {
-                $conexion = @mysqli_connect("localhost", "usrDksLanguajes", "kdhr7m4j6f2b", "dkslanguajes") or die("Error en la conexion de DKSbasico");
-            }
+            conexionOtroDKS($inicio, $conexion);
             
             //Se busca el concepto instanciado o referenciado
             busquedaConcepto($inicio, $conexion, $padre);
 
-            //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS
+            //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS (ALGORITMO)
             buscaHijos($padre, $conexion, $queue, $visitados);
             
-            // // Búsqueda del resto de genes hijos locales
+            // Búsqueda del resto de genes hijos locales
             genesLocales($inicio, $conexion, $queue, $visitados, $dks);
             
         }
@@ -71,38 +67,21 @@ function primeroEnAnchura($fin, $queue, $visitados, $dks)
             
             //cerramos la conexión anterior
             mysqli_close($conexion);
-            //nos conectamos al dks local
-            switch ($dks) {
-                case 'DksBasico':
-                    $conexion = @mysqli_connect("localhost", "usrDksBasico", "mifg6ef3pj33", "dksbasico") or die("Error en la conexion de DKSbasico");
-                    break;
-                case 'DksDesarrollo':
-                    $conexion = @mysqli_connect("localhost", "usrDksDesarrollo", "m5nd7Dt0Uf3c", "dksdesarrollo") or die("Error en la conexion de DksDesarrollo");
-                    break;
-                case 'DksGeneric':
-                    $conexion = @mysqli_connect("localhost", "usrDksGeneric", "lo93b5jd84h5", "dksgeneric") or die("Error en la conexion de GenericConexion");
-                    break;
-                case 'DksKLW':
-                    $conexion = @mysqli_connect("localhost", "usrDksKlw", "cd4ji96hu9bd", "dksklw") or die("Error en la conexion de KlwConexion");
-                    break;
-                case 'DksLanguajes':
-                    $conexion = @mysqli_connect("localhost", "usrDksLanguajes", "kdhr7m4j6f2b", "dkslanguajes") or die("Error en la conexion de LanguajesConexion");
-                    break;
-            }
+            
+            //Se realiza la conexión a la BBDD del dks local
+            conexion($dks, $conexion);
             
             //Se busca el concepto instanciado o referenciado
             busquedaConcepto($inicio, $conexion, $padre);
             
-            //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS
+            //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS (ALGORITMO)
             buscaHijos($padre, $conexion, $queue, $visitados);
             
             // Búsqueda del resto de genes hijos locales
             genesLocales($inicio, $conexion, $queue, $visitados, $dks);
             
         }
-        /*
-         * Si estamos en el DKS local, y es un sinTecho o el primer nodo
-         */
+        //Si estamos en el DKS local, y es un sinTecho o el primer nodo
         elseif (($inicio['InsRef'] == 2 || ($inicio['InsRef'] == 0 && $inicio['IdRelPadre'] == 0)) && $inicio['Localidad'] == 1 ){
             
             // Búsqueda de genes locales
@@ -146,32 +125,16 @@ function genesLocales($inicio, &$conexion, &$queue, &$visitados, $dks){
     //cerramos la conexion anterior
     mysqli_close($conexion);
     
-    //nos conectamos al dks local
-    switch ($dks) {
-        case 'DksBasico':
-            $conexion = @mysqli_connect("localhost", "usrDksBasico", "mifg6ef3pj33", "dksbasico") or die("Error en la conexion de DKSbasico");
-            break;
-        case 'DksDesarrollo':
-            $conexion = @mysqli_connect("localhost", "usrDksDesarrollo", "m5nd7Dt0Uf3c", "dksdesarrollo") or die("Error en la conexion de DksDesarrollo");
-            break;
-        case 'DksGeneric':
-            $conexion = @mysqli_connect("localhost", "usrDksGeneric", "lo93b5jd84h5", "dksgeneric") or die("Error en la conexion de GenericConexion");
-            break;
-        case 'DksKLW':
-            $conexion = @mysqli_connect("localhost", "usrDksKlw", "cd4ji96hu9bd", "dksklw") or die("Error en la conexion de KlwConexion");
-            break;
-        case 'DksLanguajes':
-            $conexion = @mysqli_connect("localhost", "usrDksLanguajes", "kdhr7m4j6f2b", "dkslanguajes") or die("Error en la conexion de LanguajesConexion");
-            break;
-    }
+    //Se realiza la conexión a la BBDD del dks local
+    conexion($dks, $conexion);
     
-    //Se buscan los hijos
+    //Se buscan los hijos (ALGORITMO)
     buscaHijos($inicio, $conexion, $queue, $visitados);
     
 }
 
 
-//Funcion auxiliar para buscar hijos de un nodo
+//Funcion auxiliar para buscar hijos de un nodo (ALGORITMO)
 function buscaHijos($inicio, $conexion, &$queue, &$visitados){
     //Se selecciona el resto de hijos
     $hijos = mysqli_query($conexion, "SELECT * FROM conceptos_conceptos WHERE IdRelPadre = '" . $inicio['IdRel'] . "'");

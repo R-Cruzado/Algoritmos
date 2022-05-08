@@ -21,13 +21,13 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
      * Se realiza la conexión a la BBDD correspondiente según el DKS. Es un array donde [0] es la conexión
      * y [1] es la consulta.
      */
-    $consulta = conexion($dks, $semilla, $inicio);
+    $consulta = consulta($dks, $semilla, $inicio);
 
     // Hay que resetear la posición del grafo por si está en una posición indebida.
-    mysqli_data_seek($consulta[1], 0);
+    mysqli_data_seek($consulta, 0);
 
     // búsqueda de tuplas en la base de datos
-    while ($row = mysqli_fetch_assoc($consulta[1])) {
+    while ($row = mysqli_fetch_assoc($consulta)) {
 
         /*
          * if else if es mas flexible, pero en este caso se utiliza una estructura switch ya que si el número de
@@ -77,9 +77,6 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                     print "(No estan relacionados)";
                 }
 
-                // cerramos la conexión de la BBDD
-                CierreConexion($consulta[0]);
-
                 // Termina de ejecutarse la funcion
                 return 0;
 
@@ -97,7 +94,6 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                 if ($algoritmo == 0) {
                     print "(No estan relacionados)";
                 }
-                CierreConexion($consulta[0]);
                 return 0;
 
             default:

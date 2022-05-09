@@ -6,9 +6,8 @@
  * Clase para hacer la llamada al algoritmo de búsqueda correspondiente (ya que los algoritmos necesitan
  * como argumento $inicio el valor de una tupla para un correcto funcionamiento), y las correspondientes excepciones
  */
-require_once ("Coste_uniforme.php");
-require_once ("Primero_profundidad.php");
-require_once ("Primero_anchura.php");
+
+require_once ("Distribuido.php");
 require_once ("Conexion.php");
 
 /**
@@ -22,6 +21,9 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
      * y [1] es la consulta.
      */
     $consulta = consulta($dks, $semilla, $inicio);
+    
+    // para comprobar si se repiten los nodos
+    $visitados = [];
 
     // Hay que resetear la posición del grafo por si está en una posición indebida.
     mysqli_data_seek($consulta, 0);
@@ -37,8 +39,6 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
         switch ($algoritmo) {
 
             case 'Primero_anchura':
-                // para comprobar si se repiten los nodos
-                $visitados = [];
                 // añadimos a visitados el primer elemento
                 array_push($visitados, $row['ClaveHijo']);
                 // creamos Cola FIFO
@@ -49,11 +49,11 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                  * $inicio será el $row que se ha añadido a la cola para hacer una búsqueda dependiendo del
                  * IdRelPadre que es por el que empieza a buscar, para encontrar su descendiente hasta encontrar
                  * a $fin.
-                 * Llamada a primero en anchura
+                 * Llamada a primero en anchura a trabés de la función distribucion en Distribuido.php
                  */
-                $algoritmo = primeroEnAnchura($fin, $queue, $visitados, $dks);
+                $resultado = distribucion($fin, $queue, $visitados, $dks, $algoritmo);
 
-                if ($algoritmo == 0) {
+                if ($resultado == 0) {
                     print "(No estan relacionados)";
                 }
                 
@@ -64,14 +64,13 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                 return 0;
 
             case 'Primero_profundidad':
-                $visitados = [];
                 array_push($visitados, $row['ClaveHijo']);
                 // creamos Pila LIFO
                 $stack = new SplStack();
                 // añadimos la tupla encontrada a la pila
                 $stack->push($row);
                 // Llamada a primero en profundidad, de la misma forma que se llama a primero en anchura.
-                $algoritmo = primeroEnProfundidad($consulta[0], $fin, $stack, $visitados);
+                $algoritmo = primeroEnProfundidad($fin, $stack, $visitados, $dks);
 
                 if ($algoritmo == 0) {
                     print "(No estan relacionados)";
@@ -81,7 +80,6 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                 return 0;
 
             case 'Coste_uniforme':
-                $visitados = [];
                 array_push($visitados, $row['ClaveHijo']);
                 // Creamos una cola de prioridad
                 $ColaPrioridad = new SplPriorityQueue();

@@ -6,12 +6,10 @@
  * Algoritmo de primero en anchura
  */
 
-//require_once("Llamada.php");
-//require_once("Conexion.php");
 require_once("Distribuido.php");
 
 
-//Funcion auxiliar para buscar hijos de un nodo (Algoritmo de Primero en profundidad)
+//Funcion auxiliar para buscar hijos de un nodo (Parte del algoritmo de Primero en Anchura que añade elementos a la cola)
 function primeroEnAnchura($inicio, $conexion, &$queue, &$visitados){
     //Se selecciona el resto de hijos
     $hijos = mysqli_query($conexion, "SELECT * FROM conceptos_conceptos WHERE IdRelPadre = '" . $inicio['IdRel'] . "'");

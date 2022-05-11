@@ -70,9 +70,9 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                 // añadimos la tupla encontrada a la pila
                 $stack->push($row);
                 // Llamada a primero en profundidad, de la misma forma que se llama a primero en anchura.
-                $algoritmo = primeroEnProfundidad($fin, $stack, $visitados, $dks);
+                $resultado = distribucion($fin, $stack, $visitados, $dks, $algoritmo);
 
-                if ($algoritmo == 0) {
+                if ($resultado == 0) {
                     print "(No estan relacionados)";
                 }
 
@@ -88,10 +88,12 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                  */
                 $ColaPrioridad->insert($row, 1);
                 // Llamada a coste uniforme, de la misma forma que se llama a primero en anchura y primero en profundidad.
-                $algoritmo = costeUniforme($consulta[0], $fin, $ColaPrioridad, $visitados);
-                if ($algoritmo == 0) {
+                $resultado = distribucion($fin, $ColaPrioridad, $visitados, $dks, $algoritmo);
+                
+                if ($resultado == 0) {
                     print "(No estan relacionados)";
                 }
+                
                 return 0;
 
             default:

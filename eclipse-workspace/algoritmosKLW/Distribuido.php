@@ -11,18 +11,32 @@ require_once("Primero_profundidad.php");
 require_once("Coste_uniforme.php");
 require_once("Conexion.php");
 
-
-//Función para cambiar de DKS y hacer las llamadas correspondientes a los algoritmos de búsqueda
+/*
+ * Función para cambiar de DKS y hacer las llamadas correspondientes al tipo de apcoplamiento de los algoritmos de búsqueda
+ * En esta función se hace la parte del algoritmo en la que se va iterando mientras haya elementos en la estructura de datos
+ */
 function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
 {
-    //Dependiendo del algoritmo, el algoritmo a llamar y la estructura será distinta, el resto (distribucion) es igual
+    /*
+     * Dependiendo del algoritmo, el algoritmo a llamar y la estructura será distinta, el resto (distribucion) es igual
+     * Las llamadas a las funciones se hacen cogiendo el nombre de las funciones mediante variables
+     */
     if ($algoritmo == 'Primero_anchura'){
         $desacoplar = 'dequeue';
         $buscaHijos = 'primeroEnAnchura';
-    }elseif($algoritmo == 'Primero_anchura'){
+    }elseif($algoritmo == 'Primero_profundidad'){
+        //pila auxiliar
+        $aux = new SplStack();
         $desacoplar = 'pop';
         $buscaHijos = 'primeroEnProfundidad';
-    }elseif($algoritmo == 'Primero_anchura'){
+    }elseif($algoritmo == 'Coste_uniforme'){
+        /*
+         * A los nodos que no son referencias, hay que ir quitándole prioridad a los posteriormente
+         * encontrados para que sigan un orden de encontrados también
+         */
+        $contador = 0;
+        // las referencias cuentan con menos prioridad, y también hay que priorizarlos por el orden de encontrados
+        $contadorReferencias = -9999999;
         $desacoplar = 'extract';
         $buscaHijos = 'costeUniforme';
     }
@@ -34,7 +48,6 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
     
     // Bucle while o do while es mas eficiente que la recursividad en programación imperativa, como lo es PHP
     do {
-        
         // Padre actual
         $inicio = $estructuraDatos->$desacoplar();
         
@@ -53,7 +66,7 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
         
         //si está en otro dks
         if ($inicio['Localidad'] == 0) {
-            
+
             //Cerramos conexion anterior
             mysqli_close($conexion);
             
@@ -62,20 +75,38 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
             
             //Se busca el concepto instanciado o referenciado
             busquedaConcepto($inicio, $conexion, $padre);
+
+            if ($algoritmo == 'Primero_profundidad'){
+                //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS (ALGORITMO)
+                $buscaHijos($padre, $conexion, $estructuraDatos, $visitados, $aux);
+                // Búsqueda del resto de genes hijos locales
+                genesLocales($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $aux, $algoritmo);
+                
+                if (! $aux->isEmpty()) {
+                    foreach ($aux as $value) {
+                        $estructuraDatos->push($value);
+                    }
+                }
+                
+                $aux = new SplStack();
+            }elseif ($algoritmo == 'Primero_anchura'){
+                
+                $buscaHijos($padre, $conexion, $estructuraDatos, $visitados);
+                genesLocales2($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $algoritmo);
+                
+            }elseif ($algoritmo == 'Coste_uniforme'){
+                
+                $buscaHijos($padre, $conexion, $estructuraDatos, $visitados, $contador, $contadorReferencias);
+                genesLocales3($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $algoritmo, $contador, $contadorReferencias);
             
-            //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS (ALGORITMO)
-            $buscaHijos($padre, $conexion, $estructuraDatos, $visitados);
-            
-            // Búsqueda del resto de genes hijos locales
-            genesLocales($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos);
-            
+            }
         }
         /*
          * Si se instancia o referencia a un concepto local y si no es el prmier nodo, ya que
          * si es el primer nodo no hace referencia o instancia a otro concepto
          */
         elseif (($inicio['InsRef'] == 1 || $inicio['InsRef'] == 0) && $inicio['Localidad'] == 1 && $inicio['IdRelPadre'] != 0){
-            
+           
             //cerramos la conexión anterior
             mysqli_close($conexion);
             
@@ -85,18 +116,51 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
             //Se busca el concepto instanciado o referenciado
             busquedaConcepto($inicio, $conexion, $padre);
             
-            //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS (ALGORITMO)
-            $buscaHijos($padre, $conexion, $estructuraDatos, $visitados);
-            
-            // Búsqueda del resto de genes hijos locales
-            genesLocales($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos);
+            if ($algoritmo == 'Primero_profundidad'){
+                //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS (ALGORITMO)
+                $buscaHijos($padre, $conexion, $estructuraDatos, $visitados, $aux);
+                // Búsqueda del resto de genes hijos locales
+                genesLocales($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $aux, $algoritmo);
+                
+                if (! $aux->isEmpty()) {
+                    foreach ($aux as $value) {
+                        $estructuraDatos->push($value);
+                    }
+                }
+                
+                $aux = new SplStack();
+            }elseif ($algoritmo == 'Primero_anchura'){
+                
+                $buscaHijos($padre, $conexion, $estructuraDatos, $visitados);
+                genesLocales2($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $algoritmo);
+                
+            }elseif ($algoritmo == 'Coste_uniforme'){
+                
+                $buscaHijos($padre, $conexion, $estructuraDatos, $visitados, $contador, $contadorReferencias);
+                genesLocales3($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $algoritmo, $contador, $contadorReferencias);
+                
+            }
             
         }
         //Si estamos en el DKS local, y es un sinTecho o el primer nodo
         elseif (($inicio['InsRef'] == 2 || ($inicio['InsRef'] == 0 && $inicio['IdRelPadre'] == 0)) && $inicio['Localidad'] == 1 ){
-            
-            // Búsqueda de genes locales
-            genesLocales($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos);
+
+            if ($algoritmo == 'Primero_profundidad'){
+                // Búsqueda de genes locales
+                genesLocales($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $aux, $algoritmo);
+                
+                if (! $aux->isEmpty()) {
+                    foreach ($aux as $value) {
+                        $estructuraDatos->push($value);
+                    }
+                }
+                
+                $aux = new SplStack();
+            }elseif ($algoritmo == 'Primero_anchura'){
+                genesLocales2($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $algoritmo);
+            }elseif ($algoritmo == 'Coste_uniforme'){
+                genesLocales3($inicio, $conexion, $estructuraDatos, $visitados, $dks, $buscaHijos, $algoritmo, $contador, $contadorReferencias);
+            }
             
         }
         
@@ -128,7 +192,21 @@ function busquedaConcepto($inicio, $conexion, &$padre){
 
 
 //Función auxiliar para la búsqueda de genes locales, & es paso por referencia
-function genesLocales($inicio, &$conexion, &$queue, &$visitados, $dks, $buscaHijos){
+function genesLocales($inicio, &$conexion, &$queue, &$visitados, $dks, $buscaHijos, &$aux, $algoritmo){
+
+    //cerramos la conexion anterior
+    mysqli_close($conexion);
+    
+    //Se realiza la conexión a la BBDD del dks local
+    conexion($dks, $conexion);
+    
+    //Se buscan los hijos (ALGORITMO)
+    $buscaHijos($inicio, $conexion, $queue, $visitados, $aux);
+    
+}
+
+//Función auxiliar para la búsqueda de genes locales, & es paso por referencia
+function genesLocales2($inicio, &$conexion, &$queue, &$visitados, $dks, $buscaHijos, $algoritmo){
     
     //cerramos la conexion anterior
     mysqli_close($conexion);
@@ -138,5 +216,19 @@ function genesLocales($inicio, &$conexion, &$queue, &$visitados, $dks, $buscaHij
     
     //Se buscan los hijos (ALGORITMO)
     $buscaHijos($inicio, $conexion, $queue, $visitados);
+    
+}
+
+//Función auxiliar para la búsqueda de genes locales, & es paso por referencia
+function genesLocales3($inicio, &$conexion, &$queue, &$visitados, $dks, $buscaHijos, $algoritmo, &$contador, &$contadorReferencias){
+    
+    //cerramos la conexion anterior
+    mysqli_close($conexion);
+    
+    //Se realiza la conexión a la BBDD del dks local
+    conexion($dks, $conexion);
+    
+    //Se buscan los hijos (ALGORITMO)
+    $buscaHijos($inicio, $conexion, $queue, $visitados, $contador, $contadorReferencias);
     
 }

@@ -1,0 +1,5 @@
+GRANT ALL ON dksbasico.* TO 'usrDksBasico'@'%';
+GRANT ALL ON dksdesarrollo.* TO 'usrDksDesarrollo'@'%';
+GRANT ALL ON dksgeneric.* TO 'usrDksGeneric'@'%';
+GRANT ALL ON dksklw.* TO 'usrDksKlw'@'%';
+GRANT ALL ON dkslanguajes.* TO 'usrDksLanguajes'@'%';

@@ -17,8 +17,7 @@ require_once ("Conexion.php");
 function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
 {
     /*
-     * Se realiza la conexión a la BBDD correspondiente según el DKS. Es un array donde [0] es la conexión
-     * y [1] es la consulta.
+     * Se realiza la conexión a la BBDD correspondiente según el DKS y devuelve la consulta correspondiente.
      */
     $consulta = consulta($dks, $semilla, $inicio);
     
@@ -46,10 +45,8 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                 // añadimos la tupla encontrada a la cola
                 $queue->enqueue($row);
                 /*
-                 * $inicio será el $row que se ha añadido a la cola para hacer una búsqueda dependiendo del
-                 * IdRelPadre que es por el que empieza a buscar, para encontrar su descendiente hasta encontrar
-                 * a $fin.
-                 * Llamada a primero en anchura a trabés de la función distribucion en Distribuido.php
+                 * Se llama a la función que selecciona el DKS adecuado al camino que se va siguiendo
+                 * teniendo en cuenta el algoritmo seleccionado
                  */
                 $resultado = distribucion($fin, $queue, $visitados, $dks, $algoritmo);
 
@@ -69,7 +66,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                 $stack = new SplStack();
                 // añadimos la tupla encontrada a la pila
                 $stack->push($row);
-                // Llamada a primero en profundidad, de la misma forma que se llama a primero en anchura.
+                
                 $resultado = distribucion($fin, $stack, $visitados, $dks, $algoritmo);
 
                 if ($resultado == 0) {
@@ -87,7 +84,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $semilla)
                  * Añadimos la tupla encontrada a la cola de prioridad, se le añade prioridad 1 por ser la raíz
                  */
                 $ColaPrioridad->insert($row, 1);
-                // Llamada a coste uniforme, de la misma forma que se llama a primero en anchura y primero en profundidad.
+              
                 $resultado = distribucion($fin, $ColaPrioridad, $visitados, $dks, $algoritmo);
                 
                 if ($resultado == 0) {

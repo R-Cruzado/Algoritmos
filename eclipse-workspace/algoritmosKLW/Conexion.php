@@ -15,7 +15,8 @@ require_once("Semilla3.php");
 
 /*
  * Conectar con la BBDD correspondiente, y hacer las consultas correspondientes
- * $dks: Tipo de dks donde se harán las consultas, $semilla: nivel de dificultad del dks
+ * $dks: Tipo de dks donde se harán las consultas, $semilla: nivel de dificultad del dks,
+ * $inicio: nombre del primer gen a buscar
  * */
 function consulta($dks, $semilla, $inicio){
     
@@ -29,7 +30,7 @@ function consulta($dks, $semilla, $inicio){
     
 }
 
-
+// Conexion a DKS local
 function conexion($dks, &$conexion){
     switch($dks){
         case 'DksBasico':

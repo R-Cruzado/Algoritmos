@@ -6,10 +6,10 @@
  * Semilla 2
  */
 
-function semilla3($conBBDD){
+function semilla3(){
     
     //borramos los datos que pueda haber en la BBDD de otras semillas
-    mysqli_query($conBBDD,"delete from conceptos_conceptos");
+    mysqli_query($conexion,"delete from conceptos_conceptos");
     
     //Necesitamos caracteres para crear la columna ClaveHijo
     $caracteres = 'abcdefghijklmnopqrstuvwxyz';
@@ -38,7 +38,7 @@ function semilla3($conBBDD){
         //print $IdRel."*".$IdRelPadre."*".$ClaveHijo."*".$InsRef." ";
         
         //Se insertan los datos
-        mysqli_query($conBBDD, "INSERT INTO conceptos_conceptos VALUES
+        mysqli_query($conexion, "INSERT INTO conceptos_conceptos VALUES
             ('".$IdRel."','".$IdRelPadre."','".$ClaveHijo."','a',1,'',1,'".$InsRef."')");
     }
     

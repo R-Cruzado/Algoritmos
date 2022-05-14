@@ -6,6 +6,8 @@
  * Algoritmo de Coste uniforme
  */
 
+require_once ("Distribuido.php");
+
 // Algoritmo de Coste Uniforme
 function costeUniforme($inicio, $conexion, &$ColaPrioridad, &$visitados, &$contador, &$contadorReferencias)
 {

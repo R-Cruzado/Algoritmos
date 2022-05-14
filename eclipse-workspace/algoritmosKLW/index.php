@@ -18,9 +18,9 @@ $iniciaTiempo = microtime(true);
  * segundo gen (descendiente)
  * DKS al cuál queremos hacer la consulta "DksBasico, DksDesarrollo, DksGeneric, DksKLW, DksLanguajes"
  * Tipo de algoritmo (Primero_anchura o Primero_profundidad, Coste_uniforme)
- * Nivel de dificultad de la semilla (1, 2, 3) a mayor número, mayor dificultad para el algoritmo
+ * Numero de genes (nodos) generados por cada base de datos de las 5 que hay (5 DKS)
  * */
-llamada('a', 'z', 'DksDesarrollo', 'Primero_anchura', 1);
+llamada('a', 'z', 'DksDesarrollo', 'Primero_anchura', 1000);
 
 //Fin de tiempo de ejecución y mostrarlo por pantalla
 $finalizaTiempo = microtime(true);

@@ -20,7 +20,7 @@ $iniciaTiempo = microtime(true);
  * Tipo de algoritmo (Primero_anchura o Primero_profundidad, Coste_uniforme)
  * Numero de genes (nodos) generados por cada base de datos de las 5 que hay (5 DKS)
  * */
-llamada('a', 'z', 'DksDesarrollo', 'Primero_anchura', 1000);
+llamada('a', 'z', 'DksDesarrollo', 'Primero_anchura', 100);
 
 //Fin de tiempo de ejecución y mostrarlo por pantalla
 $finalizaTiempo = microtime(true);

@@ -49,6 +49,7 @@ function conexion($dks, &$conexion){
             break;
         case 'DksLanguajes':
             $conexion=@mysqli_connect("localhost","usrDksLanguajes","kdhr7m4j6f2b","dkslanguajes")or die("Error en la conexion de LanguajesConexion");
+            break;
         default:
             print "El DKS pasado por parametro no existe ";
             return 0;

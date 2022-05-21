@@ -42,6 +42,8 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
     $conexion = 0;
     //Variable para buscar el padre de un concepto instanciado o referenciado
     $padre = 0;
+    //El nombre del dks cambia dependiendo del dks desde el que estemos buscando
+    $dks_actual = $dks;
     
     // Bucle while o do while es mas eficiente que la recursividad en programación imperativa, como lo es PHP
     do {
@@ -72,20 +74,20 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
             
             //Se busca el concepto instanciado o referenciado
             busquedaConcepto($inicio, $conexion, $padre);
-            
+
             //búsqueda de hijos
             if ($algoritmo == 'Primero_anchura'){
                 
                 //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS (ALGORITMO)
                 primeroEnAnchura($padre, $conexion, $estructuraDatos, $visitados);
                 // Búsqueda del resto de genes hijos locales
-                genesLocalesAnchura($inicio, $conexion, $estructuraDatos, $visitados, $dks);
+                genesLocalesAnchura($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual);
                 
             }elseif ($algoritmo == 'Primero_profundidad'){
                 
                 primeroEnProfundidad($padre, $conexion, $estructuraDatos, $visitados, $aux);
                 
-                genesLocalesProfundidad($inicio, $conexion, $estructuraDatos, $visitados, $dks, $aux);
+                genesLocalesProfundidad($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual, $aux);
                 
                 if (! $aux->isEmpty()) {
                     foreach ($aux as $value) {
@@ -95,23 +97,25 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
                 
                 $aux = new SplStack();
             }elseif ($algoritmo == 'Coste_uniforme'){
-                
                 costeUniforme($padre, $conexion, $estructuraDatos, $visitados, $contador, $contadorReferencias);
-                genesLocalesCoste($inicio, $conexion, $estructuraDatos, $visitados, $dks, $contador, $contadorReferencias);
+                genesLocalesCoste($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual, $contador, $contadorReferencias);
             
             }
         }
         /*
-         * Si se instancia o referencia a un concepto local y si no es el prmier nodo, ya que
+         * Si se instancia o referencia a un concepto local y si no es el primer nodo, ya que
          * si es el primer nodo no hace referencia o instancia a otro concepto
          */
         elseif (($inicio['InsRef'] == 1 || $inicio['InsRef'] == 0) && $inicio['Localidad'] == 1 && $inicio['IdRelPadre'] != 0){
            
+            //hay que hacer las conexiones en el dks en el que nos encontramos
+            DKSactual($inicio, $dks_actual);
+            
             //cerramos la conexión anterior
             mysqli_close($conexion);
             
             //Se realiza la conexión a la BBDD del dks local
-            conexion($dks, $conexion);
+            conexion($dks_actual, $conexion);
             
             //Se busca el concepto instanciado o referenciado
             busquedaConcepto($inicio, $conexion, $padre);
@@ -119,13 +123,13 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
             if ($algoritmo == 'Primero_anchura'){
                 
                 primeroEnAnchura($padre, $conexion, $estructuraDatos, $visitados);
-                genesLocalesAnchura($inicio, $conexion, $estructuraDatos, $visitados, $dks);
+                genesLocalesAnchura($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual);
                 
             }elseif ($algoritmo == 'Primero_profundidad'){
                 //Se buscan los hijos del concepto instanciado o referenciado en este mismo DKS (ALGORITMO)
                 primeroEnProfundidad($padre, $conexion, $estructuraDatos, $visitados, $aux);
                 // Búsqueda del resto de genes hijos locales
-                genesLocalesProfundidad($inicio, $conexion, $estructuraDatos, $visitados, $dks, $aux);
+                genesLocalesProfundidad($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual, $aux);
                 
                 if (! $aux->isEmpty()) {
                     foreach ($aux as $value) {
@@ -137,7 +141,7 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
             }elseif ($algoritmo == 'Coste_uniforme'){
                 
                 costeUniforme($padre, $conexion, $estructuraDatos, $visitados, $contador, $contadorReferencias);
-                genesLocalesCoste($inicio, $conexion, $estructuraDatos, $visitados, $dks, $algoritmo, $contador, $contadorReferencias);
+                genesLocalesCoste($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual, $algoritmo, $contador, $contadorReferencias);
                 
             }
             
@@ -145,12 +149,15 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
         //Si estamos en el DKS local, y es un sinTecho o el primer nodo
         elseif (($inicio['InsRef'] == 2 || ($inicio['InsRef'] == 0 && $inicio['IdRelPadre'] == 0)) && $inicio['Localidad'] == 1 ){
 
+            //hay que hacer las conexiones en el dks en el que nos encontramos
+            DKSactual($inicio, $dks_actual);
+            
             //Búsqueda de hijos
             if ($algoritmo == 'Primero_anchura'){
-                genesLocalesAnchura($inicio, $conexion, $estructuraDatos, $visitados, $dks, $algoritmo);
+                genesLocalesAnchura($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual, $algoritmo);
             }elseif ($algoritmo == 'Primero_profundidad'){
                 // Búsqueda de genes locales
-                genesLocalesProfundidad($inicio, $conexion, $estructuraDatos, $visitados, $dks, $aux, $algoritmo);
+                genesLocalesProfundidad($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual, $aux, $algoritmo);
                 
                 if (! $aux->isEmpty()) {
                     foreach ($aux as $value) {
@@ -160,7 +167,7 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
                 
                 $aux = new SplStack();
             }elseif ($algoritmo == 'Coste_uniforme'){
-                genesLocalesCoste($inicio, $conexion, $estructuraDatos, $visitados, $dks, $contador, $contadorReferencias);
+                genesLocalesCoste($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual, $contador, $contadorReferencias);
             }
             
         }
@@ -193,13 +200,13 @@ function busquedaConcepto($inicio, $conexion, &$padre){
 
 
 //Función auxiliar para la búsqueda de genes locales de búsqueda en anchura, & es paso por referencia
-function genesLocalesAnchura($inicio, &$conexion, &$queue, &$visitados, $dks){
+function genesLocalesAnchura($inicio, &$conexion, &$queue, &$visitados, $dks_actual){
     
     //cerramos la conexion anterior
     mysqli_close($conexion);
     
     //Se realiza la conexión a la BBDD del dks local
-    conexion($dks, $conexion);
+    conexion($dks_actual, $conexion);
     
     //Se buscan los hijos (ALGORITMO)
     primeroEnAnchura($inicio, $conexion, $queue, $visitados);
@@ -207,13 +214,13 @@ function genesLocalesAnchura($inicio, &$conexion, &$queue, &$visitados, $dks){
 }
 
 //Función auxiliar para la búsqueda de genes locales de búsqueda en profundidad, & es paso por referencia
-function genesLocalesProfundidad($inicio, &$conexion, &$queue, &$visitados, $dks, &$aux){
+function genesLocalesProfundidad($inicio, &$conexion, &$queue, &$visitados, $dks_actual, &$aux){
 
     //cerramos la conexion anterior
     mysqli_close($conexion);
     
     //Se realiza la conexión a la BBDD del dks local
-    conexion($dks, $conexion);
+    conexion($dks_actual, $conexion);
     
     //Se buscan los hijos (ALGORITMO)
     primeroEnProfundidad($inicio, $conexion, $queue, $visitados, $aux);
@@ -221,15 +228,31 @@ function genesLocalesProfundidad($inicio, &$conexion, &$queue, &$visitados, $dks
 }
 
 //Función auxiliar para la búsqueda de genes locales de búsqueda por coste, & es paso por referencia
-function genesLocalesCoste($inicio, &$conexion, &$queue, &$visitados, $dks, &$contador, &$contadorReferencias){
+function genesLocalesCoste($inicio, &$conexion, &$queue, &$visitados, $dks_actual, &$contador, &$contadorReferencias){
     
     //cerramos la conexion anterior
     mysqli_close($conexion);
     
     //Se realiza la conexión a la BBDD del dks local
-    conexion($dks, $conexion);
+    conexion($dks_actual, $conexion);
     
     //Se buscan los hijos (ALGORITMO)
     costeUniforme($inicio, $conexion, $queue, $visitados, $contador, $contadorReferencias);
+    
+}
+
+//Hay que cambiar al DKS en el que estamos 
+function DKSactual($inicio, &$dks_actual){
+    if ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Generic" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Generic/lan_es" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Generic/lan_ing") {
+        $dks_actual = "DksGeneric";
+    } elseif ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_klw" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_klw/lan_es" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_klw/lan_ing") {
+        $dks_actual= "DksKLW";
+    } elseif ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Languajes" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Languajes/lan_es" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Languajes/lan_ing") {
+        $dks_actual = "DksLanguajes";
+    } elseif($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_basico" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_basico/lan_es" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_basico/lan_ing"){
+        $dks_actual = "DksBasico";
+    } elseif($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_desarrollo" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_desarrollo/lan_es" || $inicio['LocalizacionHijo'] == "http://localhost/klw/dks_desarrollo/lan_ing"){
+        $dks_actual = "DksDesarrollo";
+    }
     
 }

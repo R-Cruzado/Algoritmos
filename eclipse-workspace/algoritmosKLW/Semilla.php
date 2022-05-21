@@ -31,17 +31,33 @@ function semilla($conexion,$dks, $genes){
         //Es un nombre de ejemplo de la 'a' a la 'z'
         $ClaveHijo = substr(str_shuffle($caracteres), 0, 1);
         
-        $LocalizacionHijoArray = array("http://localhost/klw/".$dks, "http://localhost/klw/".$dks."/lan_es", "http://localhost/klw/".$dks."/lan_es", "http://localhost/klw/dks_Generic", "http://localhost/klw/dks_klw", "http://localhost/klw/dks_Languajes");
-        // array_rand elige un elemento aleatorio de un array
-        // Localización del hijo
-        $LocalizacionHijo = $LocalizacionHijoArray[array_rand($LocalizacionHijoArray)];
-        
         $OrdinalHijo = rand(0,1);
         
         $TiempoActualizacionHijo = 0;
         
         //Indica si el concepto reside en el DKS o en uno externo. Externo = 0, Interno = 1.
         $Localidad = rand(0,1);
+        
+        //Si está en otro DKS
+        if ($Localidad == 0){
+            // Si está en otro DKS no puede ser el mismo DKS
+            if($dks == "dks_Generic"){
+                $LocalizacionHijoArray = array("http://localhost/klw/dks_klw", "http://localhost/klw/dks_Languajes");
+            }elseif($dks == "dks_klw"){
+                $LocalizacionHijoArray = array("http://localhost/klw/dks_Generic", "http://localhost/klw/dks_Languajes");
+            }elseif($dks == "dks_Languajes"){
+                $LocalizacionHijoArray = array("http://localhost/klw/dks_Generic", "http://localhost/klw/dks_klw");
+            }else{
+                $LocalizacionHijoArray = array("http://localhost/klw/dks_Generic", "http://localhost/klw/dks_klw", "http://localhost/klw/dks_Languajes");
+            }
+        }
+        //Si está en el mismo DKS
+        else{
+            $LocalizacionHijoArray = array("http://localhost/klw/".$dks, "http://localhost/klw/".$dks."/lan_es", "http://localhost/klw/".$dks."/lan_es");
+        }
+        // array_rand elige un elemento aleatorio de un array
+        // Localización del hijo
+        $LocalizacionHijo = $LocalizacionHijoArray[array_rand($LocalizacionHijoArray)];
         
         $FamiliaArray = array("", "ai_es_", "ai_ing_");
         $Familia = $FamiliaArray[array_rand($FamiliaArray)];

@@ -20,7 +20,7 @@ function consulta($dks, $genes, $inicio){
     
     $conexion = 0;
     //Se rellenan de datos de las BBDD de los distintos DKS según el número de nodos pasado por parámetro
-    generador($genes);
+    //generador($genes);
     //Se realiza la conexión a la BBDD del dks actual
     conexion($dks, $conexion);
     //consulta a la BBDD sobre el primer gen pasado por parámetro
@@ -58,7 +58,6 @@ function conexion($dks, &$conexion){
 
 //Conexión a otro DKS
 function conexionOtroDKS($inicio, &$conexion){
-    
     if ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Generic") {
         $conexion = @mysqli_connect("localhost", "usrDksGeneric", "lo93b5jd84h5", "dksgeneric") or die("Error en la conexion de GenericConexion");
     } elseif ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_klw") {
@@ -66,7 +65,6 @@ function conexionOtroDKS($inicio, &$conexion){
     } elseif ($inicio['LocalizacionHijo'] == "http://localhost/klw/dks_Languajes") {
         $conexion = @mysqli_connect("localhost", "usrDksLanguajes", "kdhr7m4j6f2b", "dkslanguajes") or die("Error en la conexion de DKSbasico");
     }
-    
 }
 
 

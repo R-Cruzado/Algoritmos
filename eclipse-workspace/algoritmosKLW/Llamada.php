@@ -14,8 +14,9 @@ require_once ("Conexion.php");
  * $inicio: primer gen, $fin: segundo gen, $dks: dks donde se quiere hacer la consulta,
  * $algoritmo: tipo de algoritmo de búsqueda a utilizar, $semilla: semilla a utilizar
  * $genes: Numero de genes (nodos) generados por cada base de datos de las 5 que hay (5 DKS)
+ * $profundidad: profundidad de conexiones a distintos DKS a los que queremos limitar la búsqueda
  */
-function llamada($inicio, $fin, $dks, $algoritmo, $genes)
+function llamada($inicio, $fin, $dks, $algoritmo, $genes, $profundidad)
 {
     /*
      * Se realiza la conexión a la BBDD correspondiente según el DKS y devuelve la consulta correspondiente.
@@ -49,7 +50,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $genes)
                  * Se llama a la función que selecciona el DKS adecuado al camino que se va siguiendo
                  * teniendo en cuenta el algoritmo seleccionado
                  */
-                $resultado = distribucion($fin, $queue, $visitados, $dks, $algoritmo);
+                $resultado = distribucion($fin, $queue, $visitados, $dks, $algoritmo, $profundidad);
                 
                 if ($resultado == 0) {
                     print "(No estan relacionados)";
@@ -68,7 +69,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $genes)
                 // añadimos la tupla encontrada a la pila
                 $stack->push($row);
                 
-                $resultado = distribucion($fin, $stack, $visitados, $dks, $algoritmo);
+                $resultado = distribucion($fin, $stack, $visitados, $dks, $algoritmo, $profundidad);
                 
                 if ($resultado == 0) {
                     print "(No estan relacionados)";
@@ -86,7 +87,7 @@ function llamada($inicio, $fin, $dks, $algoritmo, $genes)
                  */
                 $ColaPrioridad->insert($row, 1);
                 
-                $resultado = distribucion($fin, $ColaPrioridad, $visitados, $dks, $algoritmo);
+                $resultado = distribucion($fin, $ColaPrioridad, $visitados, $dks, $algoritmo, $profundidad);
                 
                 if ($resultado == 0) {
                     print "(No estan relacionados)";

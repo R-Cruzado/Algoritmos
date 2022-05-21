@@ -19,8 +19,9 @@ $iniciaTiempo = microtime(true);
  * DKS al cuál queremos hacer la consulta "DksBasico, DksDesarrollo, DksGeneric, DksKLW, DksLanguajes"
  * Tipo de algoritmo (Primero_anchura o Primero_profundidad, Coste_uniforme)
  * Numero de genes (nodos) generados por cada base de datos de las 5 que hay (5 DKS)
+ * Numérico, profundidad de conexiones a distintos DKS a los que queremos limitar la búsqueda
  * */
-llamada('gen_prueba_001', 'gen_amigos', 'DksDesarrollo', 'Primero_anchura', 100);
+llamada('gen_prueba_001', 'gen_amigos', 'DksDesarrollo', 'Primero_anchura', 100, 5);
 
 //Fin de tiempo de ejecución y mostrarlo por pantalla
 $finalizaTiempo = microtime(true);

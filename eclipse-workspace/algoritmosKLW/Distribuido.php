@@ -15,7 +15,7 @@ require_once("Conexion.php");
  * Función para cambiar de DKS y hacer las llamadas correspondientes al tipo de apcoplamiento de los algoritmos de búsqueda
  * En esta función se hace la parte del algoritmo en la que se va iterando mientras haya elementos en la estructura de datos
  */
-function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
+function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo, $profundidad)
 {
     /*
      * Dependiendo del algoritmo, el algoritmo a llamar y la estructura será distinta, el resto (distribucion) es igual
@@ -44,6 +44,8 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
     $padre = 0;
     //El nombre del dks cambia dependiendo del dks desde el que estemos buscando
     $dks_actual = $dks;
+    //Contador de profundidad de conexiones a DKS
+    $cuentaConexiones = 0;
     
     // Bucle while o do while es mas eficiente que la recursividad en programación imperativa, como lo es PHP
     do {
@@ -56,7 +58,7 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
         
         // (Stop) Para el algoritmo si encuentra el parentesco, muestra por pantalla que están relacionados, si no, no lo están.
         if ($inicio['ClaveHijo'] == $fin) {
-            print "(Estan relacionados)";
+            print "(Estan relacionados) "."Ha habido una profundidad de ". $cuentaConexiones. " conexiones a distintos DKS";
             //cerramos conexión anterior
             mysqli_close($conexion);
             // Si están relacionados devuelve 1 como indicativo de que lo están
@@ -65,7 +67,18 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
         
         //si está en otro dks
         if ($inicio['Localidad'] == 0) {
+            
+            print "(<-- Nueva conexion) ";
 
+            //Aumenta el contador de conexiones a otros DKS
+            $cuentaConexiones ++;
+            
+            //Si se supera el máximo de profundidad pasado por parámetro sin encontrar la solución termina la búsqueda
+            if ($cuentaConexiones > $profundidad){
+                print "(Se ha superado la profundidad maxima de ". $profundidad. " conexiones a distintos DKS) ";
+                return 0;
+            }
+            
             //Cerramos conexion anterior
             mysqli_close($conexion);
             
@@ -101,6 +114,7 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo)
                 genesLocalesCoste($inicio, $conexion, $estructuraDatos, $visitados, $dks_actual, $contador, $contadorReferencias);
             
             }
+            
         }
         /*
          * Si se instancia o referencia a un concepto local y si no es el primer nodo, ya que

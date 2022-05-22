@@ -27,7 +27,6 @@ function consulta($dks, $genes, $inicio){
     $consulta = mysqli_query($conexion,"SELECT * FROM conceptos_conceptos WHERE ClaveHijo = '".$inicio."'");
     //devolvemos la consulta
     return $consulta;
-    
 }
 
 // Conexion a DKS local

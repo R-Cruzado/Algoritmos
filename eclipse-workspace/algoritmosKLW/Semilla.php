@@ -8,7 +8,7 @@
 
 
 //Función para insertar los datos en la conexión de la base de datos actual
-function semilla($conexion,$dks, $genes){
+function semilla($conexion, $dks, $genes){
     //borramos los datos que pueda haber en la BBDD de otras semillas
     mysqli_query($conexion,"delete from conceptos_conceptos");
     

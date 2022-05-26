@@ -12,8 +12,9 @@ require_once("Coste_uniforme.php");
 require_once("Conexion.php");
 
 /*
- * Función para cambiar de DKS y hacer las llamadas correspondientes al tipo de apcoplamiento de los algoritmos de búsqueda
- * En esta función se hace la parte del algoritmo en la que se va iterando mientras haya elementos en la estructura de datos
+ * Función para cambiar de DKS y hacer las llamadas correspondientes al tipo de acoplamiento de los algoritmos de búsqueda
+ * En esta función se hace la parte del algoritmo en la que se va iterando mientras haya elementos en la estructura 
+ * de datos o se encuentre la solución
  */
 function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo, $profundidad)
 {
@@ -122,8 +123,13 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo, $pro
          * si es el primer nodo no hace referencia o instancia a otro concepto
          */
         elseif (($inicio['InsRef'] == 1 || $inicio['InsRef'] == 0) && $inicio['Localidad'] == 1 && $inicio['IdRelPadre'] != 0){
-            // Volver al DKS local
-            volverDKSLocal($cambioConexion, $inicio, $dks_actual, $conexion);
+            
+            if ($cambioConexion == 1){
+                //hay que hacer las conexiones en el dks en el que nos encontramos
+                DKSactual($inicio, $dks_actual);
+                //Volver al DKS local
+                volverDKSLocal($cambioConexion, $dks_actual, $conexion);
+            }
             
             //Se busca el concepto instanciado o referenciado
             busquedaConcepto($inicio, $conexion, $padre);
@@ -151,7 +157,13 @@ function distribucion($fin, $estructuraDatos, $visitados, $dks, $algoritmo, $pro
         }
         //Si estamos en el DKS local, y es un sinTecho o el primer nodo
         elseif (($inicio['InsRef'] == 2 || ($inicio['InsRef'] == 0 && $inicio['IdRelPadre'] == 0)) && $inicio['Localidad'] == 1 ){
-            volverDKSLocal($cambioConexion, $inicio, $dks_actual, $conexion);
+            
+            if ($cambioConexion == 1){
+                //hay que hacer las conexiones en el dks en el que nos encontramos
+                DKSactual($inicio, $dks_actual);
+                //Volver al DKS local
+                volverDKSLocal($cambioConexion, $dks_actual, $conexion);
+            }
             
             //Búsqueda de hijos
             if ($algoritmo == 'Primero_anchura'){
@@ -203,8 +215,10 @@ function busquedaConcepto($inicio, $conexion, &$padre){
 //Función auxiliar para la búsqueda de genes locales de búsqueda en anchura, & es paso por referencia
 function genesLocalesAnchura($inicio, &$conexion, &$queue, &$visitados, $dks_actual, &$cambioConexion){
     
-    //Volver al DKS Local
-    volverDKSLocalGenesLocales($cambioConexion, $conexion, $dks_actual);
+    //Conectarse al DKS Local en caso de que haya cambiado la conexión
+    if ($cambioConexion == 1){
+        volverDKSLocal($cambioConexion, $dks_actual, $conexion);
+    }
     
     //Se buscan los hijos (ALGORITMO)
     primeroEnAnchura($inicio, $conexion, $queue, $visitados);
@@ -214,7 +228,10 @@ function genesLocalesAnchura($inicio, &$conexion, &$queue, &$visitados, $dks_act
 //Función auxiliar para la búsqueda de genes locales de búsqueda en profundidad, & es paso por referencia
 function genesLocalesProfundidad($inicio, &$conexion, &$queue, &$visitados, $dks_actual, &$aux, &$cambioConexion){
     
-    volverDKSLocalGenesLocales($cambioConexion, $conexion, $dks_actual);
+    if ($cambioConexion == 1){
+        //Conectarse al DKS local
+        volverDKSLocal($cambioConexion, $dks_actual, $conexion);
+    }
     
     //Se buscan los hijos (ALGORITMO)
     primeroEnProfundidad($inicio, $conexion, $queue, $visitados, $aux);
@@ -224,7 +241,10 @@ function genesLocalesProfundidad($inicio, &$conexion, &$queue, &$visitados, $dks
 //Función auxiliar para la búsqueda de genes locales de búsqueda por coste, & es paso por referencia
 function genesLocalesCoste($inicio, &$conexion, &$queue, &$visitados, $dks_actual, &$contador, &$contadorReferencias, &$cambioConexion){
     
-    volverDKSLocalGenesLocales($cambioConexion, $conexion, $dks_actual);
+    if ($cambioConexion == 1){
+        //Conectarse al DKS local
+        volverDKSLocal($cambioConexion, $dks_actual, $conexion);
+    }
     
     //Se buscan los hijos (ALGORITMO)
     costeUniforme($inicio, $conexion, $queue, $visitados, $contador, $contadorReferencias);
@@ -246,32 +266,15 @@ function DKSactual($inicio, &$dks_actual){
     }
 }
 
-// Volver al DKS local, solo si se cambia de dks respecto al nodo anterior para no repetir conexiones (1 o 0)
-function volverDKSLocal(&$cambioConexion, $inicio, &$dks_actual, &$conexion){
-    if ($cambioConexion == 1){
-        //hay que hacer las conexiones en el dks en el que nos encontramos
-        DKSactual($inicio, $dks_actual);
-        //cerramos la conexión anterior
-        mysqli_close($conexion);
-        //Se realiza la conexión a la BBDD del dks local
-        conexion($dks_actual, $conexion);
-        //se vuelve a poner a 0
-        $cambioConexion = 0;
-    }
-}
-
-
 /*
- * Volver al DKS local, solo si se cambia de dks respecto al nodo anterior para no repetir conexiones (1 o 0)
- * en genesLocales de los algoritmos
- */
-function volverDKSLocalGenesLocales(&$cambioConexion, &$conexion, &$dks_actual){
-    if ($cambioConexion ==1){
-        //cerramos la conexión anterior
-        mysqli_close($conexion);
-        //Se realiza la conexión a la BBDD del dks local
-        conexion($dks_actual, $conexion);
-        //se vuelve a poner a 0
-        $cambioConexion = 0;
-    }
+ * Conectarse al DKS actual, solo si se cambia de dks respecto al nodo anterior para no repetir conexiones (1 o 0)
+ * Si $cambioConexion == 1 es porque se ha cambiado de DKS y hay que establecer otra conexión
+ */ 
+function volverDKSLocal(&$cambioConexion, &$dks_actual, &$conexion){
+    //cerramos la conexión anterior
+    mysqli_close($conexion);
+    //Se realiza la conexión a la BBDD del dks local
+    conexion($dks_actual, $conexion);
+    //se vuelve a poner a 0
+    $cambioConexion = 0;
 }
